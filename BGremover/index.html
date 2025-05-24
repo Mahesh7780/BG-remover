@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HM BGremover | Professional Background Removal Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: calc(100vh - 160px);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .upload-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .upload-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--gray);
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, background-color 0.3s;
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-area h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .upload-area p {
+            color: var(--gray);
+        }
+        
+        .upload-area.active {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-disabled {
+            background-color: var(--gray);
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .btn-disabled:hover {
+            transform: none;
+        }
+        
+        .results {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        .results-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .result-box {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .result-header {
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .result-image {
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .result-image img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+        
+        .result-actions {
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        /* How It Works Section */
+        .steps-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .step-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+        
+        /* Pricing Section */
+        .pricing-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .pricing-section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+        
+        .pricing-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .pricing-tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .pricing-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        
+        .pricing-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+        
+        .pricing-card.popular {
+            border-color: var(--primary);
+            position: relative;
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        /* Contact Section */
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        
+        .contact-info h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-item i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-top: 0.25rem;
+        }
+        
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Legal Pages */
+        .legal-content {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .legal-content h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .legal-content h3 {
+            color: var(--dark);
+            margin: 1.5rem 0 1rem;
+        }
+        
+        .legal-content p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .legal-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .legal-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Payment Modal */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .payment-options {
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .payment-option.active {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .payment-option i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--primary);
+        }
+        
+        .payment-option .payment-details {
+            flex: 1;
+        }
+        
+        .payment-option h4 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .payment-option p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .upi-id {
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .upi-id span {
+            flex: 1;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+        
+        .copy-upi {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .copy-upi:hover {
+            background-color: var(--secondary);
+        }
+        
+        .payment-verify {
+            margin-top: 1.5rem;
+        }
+        
+        .payment-verify input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(200%);
+            transition: transform 0.3s;
+            z-index: 1100;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+            background-color: white;
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .results-container {
+                flex-direction: column;
+            }
+            
+            .pricing-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pricing-card {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .contact-container {
+                flex-direction: column;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            
+        }
+            .upload-area .filename {
+                margin-top: 1rem;
+                font-weight: 500;
+                color: var(--primary);
+                word-break: break-all;
+            }
+    </style>
+</head>
+<body>
+    <!-- Main App Page -->
+    <div id="home-page" class="page">
+        <div class="container">
+            <header>
+                <a href="#" class="logo" onclick="showPage('home-page')">
+                    <i class="fas fa-magic"></i>
+                    <span>HM BGremover</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home-page')">Home</a></li>
+                        <li><a href="#" onclick="showPage('how-it-works-page')">How It Works</a></li>
+                        <li><a href="#" onclick="showPage('pricing-page')">Pricing</a></li>
+                        <li><a href="#" onclick="showPage('contact-page')">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <section class="hero">
+                <h1>Remove Backgrounds Like a Pro</h1>
+                <p>Upload your image and get a professional-quality background removal in seconds. Perfect for eCommerce, portraits, and creative projects.</p>
+            </section>
+            
+            <div class="upload-container">
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Upload Your Image</h3>
+                    <p>Drag & drop your image here or click to browse</p>
+                    <input type="file" id="file-input" accept="image/*">
+                </div>
+                <div class="text-center">
+                    <button id="process-btn" class="btn btn-primary btn-disabled" disabled>Remove Background</button>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Processing your image...</p>
+                </div>
+                
+                <div class="results" id="results">
+                    <h2>Your Results</h2>
+                    <div class="results-container">
+                        <div class="result-box">
+                            <div class="result-header">Original Image</div>
+                            <div class="result-image">
+                                <img id="original-image" src="" alt="Original Image">
+                            </div>
+                            <div class="result-actions">
+                                <button class="btn btn-outline" id="download-original">Download</button>
+                            </div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-header">Background Removed</div>
+                            <div class="result-image">
+                                <img id="result-image" src="" alt="Result Image">
+                            </div>
+                            <div class="result-actions">
+                                <button class="btn btn-primary" id="download-result">Download HD (₹10)</button>
+                                <button class="btn btn-outline" id="download-sample">Download Sample</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- How It Works Page -->
+    <div id="how-it-works-page" class="page" style="display: none;">
+        <div class="container">
+            <header>
+                <a href="#" class="logo" onclick="showPage('home-page')">
+                    <i class="fas fa-magic"></i>
+                    <span>HM BGremover</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home-page')">Home</a></li>
+                        <li><a href="#" class="active">How It Works</a></li>
+                        <li><a href="#" onclick="showPage('pricing-page')">Pricing</a></li>
+                        <li><a href="#" onclick="showPage('contact-page')">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <section class="hero">
+                <h1>How HM BGremover Works</h1>
+                <p>Our advanced AI technology makes background removal quick and effortless. Here's how to get perfect results every time.</p>
+            </section>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Upload Your Image</h3>
+                    <p>Simply drag and drop your image or click to browse files from your device. We support JPG, PNG, and WEBP formats.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>AI Processing</h3>
+                    <p>Our advanced AI analyzes your image, detects the subject, and removes the background with pixel-perfect precision.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Download Results</h3>
+                    <p>Preview the result, download a free sample, or get the high-quality version for just ₹10 per image.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <button class="btn btn-primary" onclick="showPage('home-page')">Try It Now</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pricing Page -->
+    <div id="pricing-page" class="page" style="display: none;">
+        <div class="container">
+            <header>
+                <a href="#" class="logo" onclick="showPage('home-page')">
+                    <i class="fas fa-magic"></i>
+                    <span>HM BGremover</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home-page')">Home</a></li>
+                        <li><a href="#" onclick="showPage('how-it-works-page')">How It Works</a></li>
+                        <li><a href="#" class="active">Pricing</a></li>
+                        <li><a href="#" onclick="showPage('contact-page')">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <div class="pricing-section">
+                <h2>Simple, Transparent Pricing</h2>
+                <div class="pricing-tabs">
+                    <div class="pricing-tab active" data-plan="single">Single Image</div>
+                    <div class="pricing-tab" data-plan="bulk">Bulk Processing</div>
+                </div>
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <h3>Basic</h3>
+                        <div class="price">₹10 <span>per image</span></div>
+                        <ul class="pricing-features">
+                            <li>High-quality background removal</li>
+                            <li>PNG format with transparency</li>
+                            <li>Fast processing</li>
+                            <li>Single image processing</li>
+                        </ul>
+                        <button class="btn btn-outline" onclick="showPage('home-page')">Get Started</button>
+                    </div>
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">Most Popular</div>
+                        <h3>Pro</h3>
+                        <div class="price">₹50 <span>for 10 images</span></div>
+                        <ul class="pricing-features">
+                            <li>Everything in Basic</li>
+                            <li>Bulk processing (up to 10 images)</li>
+                            <li>Priority processing</li>
+                            <li>Higher resolution output</li>
+                        </ul>
+                        <button class="btn btn-primary" onclick="showPage('home-page')">Get Started</button>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Business</h3>
+                        <div class="price">₹200 <span>for 50 images</span></div>
+                        <ul class="pricing-features">
+                            <li>Everything in Pro</li>
+                            <li>Bulk processing (up to 50 images)</li>
+                            <li>Ultra HD resolution</li>
+                            <li>Dedicated support</li>
+                        </ul>
+                        <button class="btn btn-outline" onclick="showPage('home-page')">Get Started</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="legal-content">
+                <h3>Payment Options</h3>
+                <p>We accept all major UPI payment methods including Google Pay, PhonePe, Paytm, and BHIM. All payments are processed securely through our payment partners.</p>
+                
+                <h3>Refund Policy</h3>
+                <p>If you're not satisfied with the results, we offer a 100% money-back guarantee within 7 days of purchase. Contact our support team for refund requests.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Page -->
+    <div id="contact-page" class="page" style="display: none;">
+        <div class="container">
+            <header>
+                <a href="#" class="logo" onclick="showPage('home-page')">
+                    <i class="fas fa-magic"></i>
+                    <span>HM BGremover</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home-page')">Home</a></li>
+                        <li><a href="#" onclick="showPage('how-it-works-page')">How It Works</a></li>
+                        <li><a href="#" onclick="showPage('pricing-page')">Pricing</a></li>
+                        <li><a href="#" class="active">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <section class="hero">
+                <h1>Contact Us</h1>
+                <p>Have questions or need support? We're here to help you with any inquiries about our service.</p>
+            </section>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>support@hmbgremover.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>010-59716130</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Address</h4>
+                            <p>123 Tech Park, Bangalore, Karnataka 560001, India</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Working Hours</h4>
+                            <p>Monday - Friday: 9AM to 6PM<br>Saturday: 10AM to 4PM</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send Us a Message</h3>
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Privacy Policy Page -->
+    <div id="privacy-page" class="page" style="display: none;">
+        <div class="container">
+            <header>
+                <a href="#" class="logo" onclick="showPage('home-page')">
+                    <i class="fas fa-magic"></i>
+                    <span>HM BGremover</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home-page')">Home</a></li>
+                        <li><a href="#" onclick="showPage('how-it-works-page')">How It Works</a></li>
+                        <li><a href="#" onclick="showPage('pricing-page')">Pricing</a></li>
+                        <li><a href="#" onclick="showPage('contact-page')">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <div class="legal-content">
+                <h2>Privacy Policy</h2>
+                <p>Last updated: may24, 2025</p>
+                
+                <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
+                
+                <h3>1. Information We Collect</h3>
+                <p>We collect several different types of information for various purposes to provide and improve our Service to you.</p>
+                <ul>
+                    <li><strong>Personal Data:</strong> While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you.</li>
+                    <li><strong>Usage Data:</strong> We may collect information how the Service is accessed and used.</li>
+                    <li><strong>Image Data:</strong> The images you upload for processing are temporarily stored to provide the Service.</li>
+                </ul>
+                
+                <h3>2. Use of Your Personal Data</h3>
+                <p>The Company may use Personal Data for the following purposes:</p>
+                <ul>
+                    <li>To provide and maintain our Service</li>
+                    <li>To manage Your Account</li>
+                    <li>For the performance of a contract</li>
+                    <li>To contact You</li>
+                    <li>To provide You with news and general information about our services</li>
+                    <li>To manage Your requests</li>
+                </ul>
+                
+                <h3>3. Retention of Your Personal Data</h3>
+                <p>The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this Privacy Policy.</p>
+                
+                <h3>4. Security of Your Personal Data</h3>
+                <p>The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Terms of Service Page -->
+    <div id="terms-page" class="page" style="display: none;">
+        <div class="container">
+            <header>
+                <a href="#" class="logo" onclick="showPage('home-page')">
+                    <i class="fas fa-magic"></i>
+                    <span>HM BGremover</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home-page')">Home</a></li>
+                        <li><a href="#" onclick="showPage('how-it-works-page')">How It Works</a></li>
+                        <li><a href="#" onclick="showPage('pricing-page')">Pricing</a></li>
+                        <li><a href="#" onclick="showPage('contact-page')">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+            <div class="legal-content">
+                <h2>Terms of Service</h2>
+                <p>Last updated: January 1, 2025</p>
+                
+                <h3>1. Acceptance of Terms</h3>
+                <p>By accessing or using the HM BGremover service, you agree to be bound by these Terms of Service.</p>
+                
+                <h3>2. Description of Service</h3>
+                <p>HM BGremover provides an online background removal service through its website and API. The Service is provided "as is" and "as available".</p>
+                
+                <h3>3. User Obligations</h3>
+                <p>You agree not to use the Service:</p>
+                <ul>
+                    <li>For any illegal purpose or in violation of any laws</li>
+                    <li>To upload or process images you don't have rights to</li>
+                    <li>To attempt to reverse engineer or hack the Service</li>
+                </ul>
+                
+                <h3>4. Payment Terms</h3>
+                <p>All payments are non-refundable except as required by law. We reserve the right to change our pricing at any time.</p>
+                
+                <h3>5. Intellectual Property</h3>
+                <p>You retain all rights to the images you upload. By uploading images, you grant us a limited license to process them for the Service.</p>
+                
+                <h3>6. Limitation of Liability</h3>
+                <p>In no event shall HM BGremover be liable for any indirect, incidental, special, consequential or punitive damages.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Complete Your Payment</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option active" id="upi-option">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div class="payment-details">
+                        <h4>UPI Payment</h4>
+                        <p>Pay instantly using any UPI app</p>
+                    </div>
+                </div>
+            </div>
+            <div class="upi-id">
+                <span id="upi-id-text">hm.bgremover@upi</span>
+                <button class="copy-upi" id="copy-upi">Copy</button>
+            </div>
+            <p>Please make payment to the UPI ID above and enter your transaction ID below to verify.</p>
+            <div class="payment-verify">
+                <input type="text" id="transaction-id" placeholder="Enter UPI Transaction ID">
+                <button class="btn btn-primary" id="verify-payment">Verify Payment</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notification-message"></span>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="#" onclick="showPage('privacy-page')">Privacy Policy</a>
+            <a href="#" onclick="showPage('terms-page')">Terms of Service</a>
+            <a href="#" onclick="showPage('contact-page')">Contact Us</a>
+        </div>
+        <p>&copy; 2025 HM BGremover. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // API Configuration
+        const API_KEY = 'vT63vBQ2cvBiNbH1MAJ5B7VS';
+        const API_ENDPOINT = 'https://api.remove.bg/v1.0/removebg';
+        
+        // DOM Elements
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const processBtn = document.getElementById('process-btn');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const originalImage = document.getElementById('original-image');
+        const resultImage = document.getElementById('result-image');
+        const downloadOriginalBtn = document.getElementById('download-original');
+        const downloadResultBtn = document.getElementById('download-result');
+        const downloadSampleBtn = document.getElementById('download-sample');
+        const paymentModal = document.getElementById('payment-modal');
+        const closeModal = document.getElementById('close-modal');
+        const upiOption = document.getElementById('upi-option');
+        const upiIdText = document.getElementById('upi-id-text');
+        const copyUpi = document.getElementById('copy-upi');
+        const transactionId = document.getElementById('transaction-id');
+        const verifyPayment = document.getElementById('verify-payment');
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notification-message');
+        const contactForm = document.getElementById('contact-form');
+        
+        // Variables
+        let selectedFile = null;
+        let processedImageUrl = null;
+        let paymentVerified = false;
+        
+        // Initialize - Show home page by default
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home-page');
+        });
+        
+        // Event Listeners
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('active');
+        });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('active'));
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('active');
+            if (e.dataTransfer.files.length) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                handleFileSelect(fileInput.files[0]);
+            }
+        });
+        
+        processBtn.addEventListener('click', processImage);
+        downloadOriginalBtn.addEventListener('click', downloadOriginal);
+        downloadResultBtn.addEventListener('click', showPaymentModal);
+        downloadSampleBtn.addEventListener('click', downloadSample);
+        closeModal.addEventListener('click', () => paymentModal.style.display = 'none');
+        copyUpi.addEventListener('click', copyUpiId);
+        verifyPayment.addEventListener('click', verifyUpiPayment);
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showNotification('Your message has been sent! We will contact you soon.');
+                contactForm.reset();
+            });
+        }
+        
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            return false;
+        }
+        
+        // Functions
+        function handleFileSelect(file) {
+            if (!file.type.match('image.*')) {
+                showNotification('Please select an image file');
+                return;
+            }
+            
+            selectedFile = file;
+            processBtn.disabled = false;
+            processBtn.classList.remove('btn-disabled');
+            
+            // Display preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            
+            showNotification('Image ready for processing');
+        }
+        
+        function processImage() {
+            if (!selectedFile) return;
+
+                // Clear filename display during processing
+            const filenameDisplay = uploadArea.querySelector('.filename');
+            if (filenameDisplay) {
+                filenameDisplay.textContent = 'Processing...';
+                }
+
+            
+            // Show loading
+            loading.style.display = 'block';
+            processBtn.disabled = true;
+            processBtn.classList.add('btn-disabled');
+            
+            // Prepare form data for API request
+            const formData = new FormData();
+            formData.append('image_file', selectedFile);
+            formData.append('size', 'auto');
+            
+            // Make API call to remove.bg
+            fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'X-Api-Key': API_KEY
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                processedImageUrl = URL.createObjectURL(blob);
+                resultImage.src = processedImageUrl;
+                
+                // Hide loading and show results
+                loading.style.display = 'none';
+                results.style.display = 'block';
+                
+                showNotification('Background removed successfully!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loading.style.display = 'none';
+                processBtn.disabled = false;
+                processBtn.classList.remove('btn-disabled');
+                showNotification('Error processing image. Please try again.');
+            });
+        }
+        
+        function downloadOriginal() {
+            if (!selectedFile) return;
+            
+            const a = document.createElement('a');
+            a.href = originalImage.src;
+            a.download = 'original_' + selectedFile.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        
+        function downloadSample() {
+            if (!processedImageUrl) return;
+            
+            // For demo, we'll just download the same image but with a different name
+            const a = document.createElement('a');
+            a.href = processedImageUrl;
+            a.download = 'sample_' + selectedFile.name.replace(/\.[^/.]+$/, "") + '.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showNotification('Sample image downloaded');
+        }
+        
+        function showPaymentModal() {
+            if (!processedImageUrl) return;
+            
+            paymentModal.style.display = 'flex';
+            paymentVerified = false;
+            transactionId.value = '';
+        }
+        
+        function copyUpiId() {
+            navigator.clipboard.writeText(upiIdText.textContent)
+                .then(() => showNotification('UPI ID copied to clipboard'))
+                .catch(() => showNotification('Failed to copy UPI ID'));
+        }
+        
+        function verifyUpiPayment() {
+            const txId = transactionId.value.trim();
+            
+            if (!txId) {
+                showNotification('Please enter transaction ID');
+                return;
+            }
+            
+            // In a real app, you would verify the payment with your backend
+            // For demo, we'll just simulate verification
+            verifyPayment.disabled = true;
+            verifyPayment.textContent = 'Verifying...';
+            
+            setTimeout(() => {
+                paymentVerified = true;
+                verifyPayment.textContent = 'Verified! Downloading...';
+                showNotification('Payment verified successfully');
+                
+                // Download the HD image
+                setTimeout(() => {
+                    const a = document.createElement('a');
+                    a.href = processedImageUrl;
+                    a.download = 'hd_' + selectedFile.name.replace(/\.[^/.]+$/, "") + '.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    paymentModal.style.display = 'none';
+                    verifyPayment.disabled = false;
+                    verifyPayment.textContent = 'Verify Payment';
+                }, 1000);
+            }, 1500);
+        }
+        
+        function showNotification(message) {
+            notificationMessage.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Pricing tabs
+        const pricingTabs = document.querySelectorAll('.pricing-tab');
+        if (pricingTabs) {
+            pricingTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    pricingTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // In a real app, you would switch between pricing plans here
+                });
+            });
+        }
+
+        function handleFileSelect(file) {
+    if (!file.type.match('image.*')) {
+        showNotification('Please select an image file');
+        return;
+    }
+    
+    selectedFile = file;
+    processBtn.disabled = false;
+    processBtn.classList.remove('btn-disabled');
+    
+    // Display preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        originalImage.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    
+    // Display filename in upload area
+    let filenameDisplay = uploadArea.querySelector('.filename');
+    if (!filenameDisplay) {
+        filenameDisplay = document.createElement('div');
+        filenameDisplay.className = 'filename';
+        uploadArea.appendChild(filenameDisplay);
+    }
+    filenameDisplay.textContent = file.name;
+    
+    showNotification('Image ready for processing');
+}
+    </script>
+</body>
+</html>
