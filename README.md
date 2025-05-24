@@ -8,15 +8,14 @@
 
 ### Home Page
 
-![Home Page](screenshots/image1.png)
-
+![Home Page](BGremover/screenshots/image1.png)
 ### Upload & Remove Background
 
-![Upload & Remove Background](screenshots/image3.png)
+![Upload & Remove Background](BGremover/screenshots/image3.png)
 
 ### How it Works
 
-![How it Works](screenshots/image2.png)
+![How it Works](BGremover/screenshots/image2.png)
 
 ---
 
